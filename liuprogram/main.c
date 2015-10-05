@@ -69,13 +69,13 @@ int main(void) {
     int i,j,p,k;
     int x1,x2,y1,y2,point1=0,point2=0,special1=0,special2=0;
     int wide=0,heigh=0,wide1=0,heigh1=0;
-    int counts=2;  // count the numbers of recs that passed
-    int basic=2;
+    int counts=2;  // 通過した長方形の数を数える
+    int basic=2;//長方形が二つ以上の場合は少なくとも二つの長方形を通過する
     int x[1000],y[1000],w[1000],h[1000];
     printf("長方形の個数を入力してください：");
     scanf("%d",&k);
-    if(k<=2 && k>0) printf("通過する長方形の数は%d個です",k);
-    else if(k>2){
+    if(k<=2 && k>0) printf("通過する長方形の数は%d個です",k);//二個以下の場合の出力
+    else if(k>2){//三つ以上の長方形が入力された場合
         printf("これから%d個の長方形を入力するね\n",k);
         for(i=0;i<k;i++){
             printf("%d個目の長方形の左上の座標と幅、高さを入力：",i+1);
@@ -88,15 +88,15 @@ int main(void) {
         for(i=0;i<k;i++){
             for(p=i+1;p<k;p++){
                 for(wide=0;wide<=w[i];wide++){
-                    x1=x[i]+wide;
+                    x1=x[i]+wide;//a長方形を囲んだ点のx軸を決める
                     for(heigh=0;heigh<=h[i];heigh++){
-                        y1=y[i]-heigh;
+                        y1=y[i]-heigh;//a長方形を囲んだ点のy軸を決める
                         for(wide1=0;wide1<=w[p];wide1++){
-                            x2=x[p]+wide1;
+                            x2=x[p]+wide1;//b長方形を囲んだ点のx軸を決める
                             for(heigh1=0;heigh1<=h[p];heigh1++){
-                                y2=y[p]-heigh1;
+                                y2=y[p]-heigh1;//b長方形を囲んだ点のy軸を決める
                                 
-                                if(x1==x2 && y1!=y2){
+                                if(x1==x2 && y1!=y2){//2点で直線を決めるときの例外状況
                                     special1=x1;
                                     point1=0;
                                     point2=x1;
@@ -109,13 +109,13 @@ int main(void) {
                                     special2=y1;
                                 }
                                 if(x1==x2 && y1==y2) break;
-                                if(x1!=x2 && y1!=y2){
+                                if(x1!=x2 && y1!=y2){//2点で直線を決めて、x軸とy軸の点に当てはめることによって、線分を決める
                                     point1=y1-x1*((y2-y1)/(x2-x1));
                                     point2=x1-y1*((x2-x1)/(y2-y1));
                                 }
                                 counts=2;
                                 for(j=0;j<k ;j++){
-                                    if(j!=i && j!=p){
+                                    if(j!=i && j!=p){//繋いだ二つの長方形以外の長方形を試す
                                         if (RectAndLine(x[j],y[j],w[j],h[j],special1,point1,point2,special2) == TRUE){
                                             counts++;
                                             //printf("%d個の長方形通過した\n",counts);
@@ -123,6 +123,7 @@ int main(void) {
                                                 basic=counts;
                                             
                                             }
+                                            if(basic==k) goto result;//計算量を減らすために、全ての長方形を通過できる結果が出れば計算終了にする
                                         }
                                     }
                                 }
@@ -134,9 +135,9 @@ int main(void) {
             }
         }
         
-        printf("通過した長方形の数は%d個です",basic);
+    result: printf("通過した長方形の数は%d個です",basic);
         
     }
-    else printf("せめてひとつください！");
+    else printf("せめてひとつください！");//k<0の場合の出力
     
 }
